@@ -5,6 +5,6 @@
 
 TEST(test_lib, simple_test)
 {
-  int v  = add(2,2);
+  int v  = 2 + 2;
   EXPECT_EQ(4, v);
 }

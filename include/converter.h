@@ -1,10 +1,13 @@
 #pragma once
 
 #include<string>
+#include<cctype>
 #include<stdexcept>
 #include<iostream>
 
 using namespace std;
+
+const int sizeArr = 7;
 
 enum romanNumeral {I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M  = 1000};
 
