@@ -2,6 +2,7 @@
 
 #if defined(_MSC_VER)
    	#include<conio.h>
+	string clear = "CLS";
 #elif defined(__unix)
    	#include<termios.h>
 	#include<cstdio>
@@ -44,6 +45,7 @@
 	{
 	  return getch_(1);
 	}
+	string clear = "clear";
  #endif
 
 menuConverter::menuConverter() {
@@ -59,7 +61,10 @@ void menuConverter::romanToArabic() {
 	while (true) {
 		cout << "Enter roman number: ";
 		cin >> k;
+#if defined(_MSC_VER)
+#elif defined(__unix)
 		getch();
+#endif
 		if (k == "0") break;
 		rom.value = k;
 		conv.setRoman(rom);
@@ -75,7 +80,10 @@ void menuConverter::arabicToRoman() {
 	while (true) {
 		cout << "Enter arabic number: ";
 		cin >> k;
+#if defined(_MSC_VER)
+#elif defined(__unix)
 		getch();
+#endif
 		if (k == 0) break;
 		ar.value = k;
 		conv.setArabic(ar);
@@ -125,8 +133,8 @@ void menuConverter::searchRomanInText() {
 			conv.setRoman(rm);
 			ar = conv.getArabic();
 			string num = to_string(ar.value);
-			textOut.replace(i - count, count, num);
-			i = i - count + num.length();
+			textOut.replace((long long)i - count, count, num);
+			i = i - count + (int)num.length();
 			count = 0;
 			state = q0;
 		}
@@ -140,7 +148,12 @@ void menuConverter::enterText() {
 	searchRomanInText();
 	cout << textOut << endl;
 	cout << "Press Enter to continue...";
-	getch();
+	#if defined(_MSC_VER)
+	char c;
+	c = _getch();
+	#elif defined(__unix)
+		getch();
+	#endif
 }
 
 void menuConverter::readFile() {
@@ -150,6 +163,7 @@ void menuConverter::readFile() {
 	cout << "Enter name of file: ";
 	getline(cin, str);
 	inpFile.open(str);
+	bool b = inpFile.is_open();
 	while(!inpFile.eof()) {
 		getline(inpFile, str);
 		text += str;
@@ -158,7 +172,12 @@ void menuConverter::readFile() {
 	searchRomanInText();
 	cout << textOut;
 	cout << "Press Enter to continue...";
+#if defined(_MSC_VER)
+	char c;
+	c = _getch();
+#elif defined(__unix)
 	getch();
+#endif
 }
 
 void menuConverter::convText() {
@@ -173,7 +192,7 @@ void menuConverter::convText() {
 
 	while (isOpen)
 	{
-		system("clear");
+		system(clear.c_str());
 		cout << nameProgram << endl;
 		cout << endl;
 
@@ -190,11 +209,39 @@ void menuConverter::convText() {
 			cout << endl;
 		}
 
+#if defined(_MSC_VER)
+		c = _getch();
+		if (c == -32)
+			c = _getch();
+
+		switch (c)
+		{
+		case 72:
+			op = (op + op_n - 1) % op_n;
+			break;
+		case 80:
+			op = (op + 1) % op_n;
+			break;
+		case 27:
+			isOpen = false;
+			break;
+		case 13:
+			if (op == op_n - 1) {
+				isOpen = false;
+			}
+			else if (op == 0) {
+				enterText();
+			}
+			else if (op == 1) {
+				readFile();
+			}
+		}
+#elif defined(__unix)
 		c = getch();
 		if (c == 27) {
 			c = getch();
 			c = getch();
-		}
+	}
 		switch (c)
 		{
 		case 65:
@@ -206,12 +253,15 @@ void menuConverter::convText() {
 		case 10:
 			if (op == op_n - 1) {
 				isOpen = false;
-			} else if (op == 0) {
+			}
+			else if (op == 0) {
 				enterText();
-			} else if (op == 1) {
+			}
+			else if (op == 1) {
 				readFile();
 			}
-		}	
+		}
+#endif
 	}
 }
 
@@ -228,7 +278,7 @@ void menuConverter::display() {
 
 	while (isOpen)
 	{
-		system("clear");
+		system(clear.c_str());
 		cout << nameProgram << endl;
 		cout << endl;
 
@@ -245,6 +295,37 @@ void menuConverter::display() {
 			cout << endl;
 		}
 
+#if defined(_MSC_VER)
+		c = _getch();
+		if (c == -32)
+			c = _getch();
+
+		switch (c)
+		{
+		case 72:
+			op = (op + op_n - 1) % op_n;
+			break;
+		case 80:
+			op = (op + 1) % op_n;
+			break;
+		case 27:
+			isOpen = false;
+			break;
+		case 13:
+			if (op == op_n - 1) {
+				isOpen = false;
+			}
+			else if (op == 0) {
+				romanToArabic();
+			}
+			else if (op == 1) {
+				arabicToRoman();
+			}
+			else if (op == 2) {
+				convText();
+			}
+		}
+#elif defined(__unix)
 		c = getch();
 		if (c == 27) {
 			c = getch();
@@ -269,5 +350,6 @@ void menuConverter::display() {
 				convText();
 			}
 		}
+#endif
 	}
 }
