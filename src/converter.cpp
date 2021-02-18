@@ -1,7 +1,5 @@
 #include <converter.h>
 
-char arrNum[] = { 'I', 'V', 'X', 'L', 'C', 'D', 'M' }; 
-
 void converter::toArabic() {
     if (!checkRoman()) throw logic_error("Invalid roman number");
     int tmpArabic = 0;
@@ -45,25 +43,25 @@ void converter::toArabic() {
     }
     
     for (int i = 0; i < tmp.length(); i++) {
-        if (romanNumber.value[i] == 'I') {
+        if (tmp[i] == 'I') {
             tmpArabic += 1;
         }
-        if (romanNumber.value[i] == 'V') {
+        if (tmp[i] == 'V') {
             tmpArabic += 5;
         }
-        if (romanNumber.value[i] == 'X') {
+        if (tmp[i] == 'X') {
             tmpArabic += 10;
         }
-        if (romanNumber.value[i] == 'L') {
+        if (tmp[i] == 'L') {
             tmpArabic += 50;
         }
-        if (romanNumber.value[i] == 'C') {
+        if (tmp[i] == 'C') {
             tmpArabic += 100;
         }
-        if (romanNumber.value[i] == 'D') {
+        if (tmp[i] == 'D') {
             tmpArabic += 500;
         }
-        if (romanNumber.value[i] == 'M') {
+        if (tmp[i] == 'M') {
             tmpArabic += 1000;
         }
     }
