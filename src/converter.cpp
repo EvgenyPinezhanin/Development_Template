@@ -43,26 +43,10 @@ void converter::toArabic() {
     }
     
     for (int i = 0; i < tmp.length(); i++) {
-        if (tmp[i] == 'I') {
-            tmpArabic += 1;
-        }
-        if (tmp[i] == 'V') {
-            tmpArabic += 5;
-        }
-        if (tmp[i] == 'X') {
-            tmpArabic += 10;
-        }
-        if (tmp[i] == 'L') {
-            tmpArabic += 50;
-        }
-        if (tmp[i] == 'C') {
-            tmpArabic += 100;
-        }
-        if (tmp[i] == 'D') {
-            tmpArabic += 500;
-        }
-        if (tmp[i] == 'M') {
-            tmpArabic += 1000;
+        for (int j = 0; j < sizeArr; j++) {
+            if (tmp[i] == arrNum[j].c) {
+                tmpArabic += arrNum[j].n;
+            }
         }
     }
     arabicNumber.value = tmpArabic;
@@ -73,76 +57,22 @@ void converter::toRoman() {
     arabic tmp = arabicNumber;
     string tmpRoman = "";
 
-    if (tmp.value / M > 0) {
-        for (int i = 0; i < tmp.value / M; i++) {
-            tmpRoman += "M";
-        }
-        tmp.value = tmp.value % M;
-    }
-    if (tmp.value >= 900) {
-        tmpRoman += "CM";
-        tmp.value -= 900;
-    }
+    if (arabicNumber.value > 3999) throw logic_error("Number greater than 3999");
 
-    if (tmp.value / D > 0) {
-        for (int i = 0; i < tmp.value / D; i++) {
-            tmpRoman += "D";
+    int k = 100;
+    for (int i = 6; i >= 0; i--) {
+        if (tmp.value / arrNum[i].n > 0) {
+            for (int j = 0; j < tmp.value / arrNum[i].n; j++) {
+                tmpRoman.append(1, arrNum[i].c);
+            }
+            tmp.value = tmp.value % arrNum[i].n;
         }
-        tmp.value = tmp.value % D;
-    }
-    if (tmp.value >= 400) {
-        tmpRoman += "CD";
-        tmp.value -= 400;
-    }
-
-    if (tmp.value / C > 0) {
-        for (int i = 0; i < tmp.value / C; i++) {
-            tmpRoman += "C";
+        if (tmp.value >= arrNum[i].n - k) {
+            tmpRoman.append(1, arrNum[i - 1 - !(i % 2)].c);
+            tmpRoman.append(1, arrNum[i].c);
+            tmp.value -= (arrNum[i].n - k);
         }
-        tmp.value = tmp.value % C;
-    }
-    if (tmp.value >= 90) {
-        tmpRoman += "XC";
-        tmp.value -= 90;
-    }
-
-    if (tmp.value / L > 0) {
-        for (int i = 0; i < tmp.value / L; i++) {
-            tmpRoman += "L";
-        }
-        tmp.value = tmp.value % L;
-    }
-    if (tmp.value >= 40) {
-        tmpRoman += "XL";
-        tmp.value -= 40;
-    }
-
-    if (tmp.value / X > 0) {
-        for (int i = 0; i < tmp.value / X; i++) {
-            tmpRoman += "X";
-        }
-        tmp.value = tmp.value % X;
-    }
-    if (tmp.value >= 9) {
-        tmpRoman += "IX";
-        tmp.value -= 9;
-    }
-
-    if (tmp.value / V > 0) {
-        for (int i = 0; i < tmp.value / V; i++) {
-            tmpRoman += "V";
-        }
-        tmp.value = tmp.value % V;
-    }
-    if (tmp.value >= 4) {
-        tmpRoman += "IV";
-        tmp.value -= 4;
-    }
-
-    if (tmp.value / I > 0) {
-        for (int i = 0; i < tmp.value / I; i++) {
-            tmpRoman += "I";
-        }
+        if (i % 2 == 1) k /= 10;
     }
     
     romanNumber.value = tmpRoman;
@@ -154,7 +84,7 @@ bool converter::checkRoman() {
         romanNumber.value[i] = toupper(romanNumber.value[i]);
         bool b = false;
         for(int j = 0; j < sizeArr; j++) {
-            if (romanNumber.value[i] == arrNum[j]) {
+            if (romanNumber.value[i] == arrNum[j].c) {
                 b = true;
                 break;
             }
@@ -162,10 +92,93 @@ bool converter::checkRoman() {
         if (!b) return false;
     }
 
-    enum State {q0, q1, q2, q3};
+    int count = 0;
+    char c, c1;
+    while (count < (int)romanNumber.value.length() - 1)
+    {
+        c = romanNumber.value[count];
+        c1 = romanNumber.value[count + 1];
+        for (int j = 0; j < sizeArr; j++) {
+            if (c == arrNum[j].c) {
+                bool b = false;
+                for (int k = 0; k < sizeArr; k++) {
+                    if (c1 == arrNum[k].c) {
+                        if ((j == 0) && (k - j > 2)) {
+                            b = true;
+                        } else if ((j == 1) && (k - j > 0)) {
+                            b = true;
+                        } else if ((j == 2) && (k - j > 2)) {
+                            b = true;
+                        } else if ((j == 3) && (k - j > 0)) {
+                            b = true;
+                        } else if ((j == 5) && (k - j > 0)) {
+                            b = true;
+                        }
+                        if (b) {
+                            arabic ar(arrNum[k].n - arrNum[j].n);
+                            converter conv(ar);
+                            romanNumber.value.replace(count, 2, conv.getRoman().value);
+                            count += conv.getRoman().value.length() - 1;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        count++;
+    }
 
-    for (int i = 0; i < romanNumber.value.length(); i++) {
-        
+    char currN = romanNumber.value[0];
+    count = 1;
+    State state = q0;
+    int countNum[] = {0, 0, 0, 0, 0, 0, 0};
+    int i = 1;
+    while (i < (int)romanNumber.value.length()) {
+        c = romanNumber.value[i];
+        if (c != currN) {
+            for (int j = 0; j < sizeArr; j++) {
+                if (c == arrNum[j].c) {
+                    if (j % 2) {
+                        if (count > 1) {
+                            arabic ar(count * arrNum[j].n);
+                            converter conv(ar);
+                            romanNumber.value.replace(i - count, count, conv.getRoman().value);
+                            i += (conv.getRoman().value.length() - 1 - count);
+                        }
+                    } else {
+                        if (count > 3) {
+                            arabic ar(count * arrNum[j].n);
+                            converter conv(ar);
+                            romanNumber.value.replace(i - count, count, conv.getRoman().value);
+                            i += (conv.getRoman().value.length() - 1 - count);
+                        }
+                    }
+                }
+            }
+            count = 0;
+            currN = c;
+        } else {
+            count++;
+        }
+        i++;
+    }
+    for (int j = 0; j < sizeArr; j++) {
+        if (c == arrNum[j].c) {
+            if (j % 2) {
+                if (count > 1) {
+                    arabic ar(count * arrNum[j].n);
+                    converter conv(ar);
+                    romanNumber.value.replace(romanNumber.value.length() - count, count, conv.getRoman().value);
+                }
+            } else {
+                if (count > 3) {
+                    arabic ar(count * arrNum[j].n);
+                    converter conv(ar);
+                    romanNumber.value.replace(romanNumber.value.length() - count, count, conv.getRoman().value);
+                }
+            }
+        }
     }
     return true;
 }
@@ -186,7 +199,6 @@ converter::converter(const roman& rom) {
     romanNumber = rom;
     isReadyRoman = true;
     isReadyArabic = false;
-    checkRoman();
     toArabic();
 }
 
@@ -201,7 +213,6 @@ void converter::setRoman(const roman& num) {
     romanNumber = num;
     isReadyRoman = true;
     isReadyArabic = false;
-    checkRoman();
     toArabic();
 }
 

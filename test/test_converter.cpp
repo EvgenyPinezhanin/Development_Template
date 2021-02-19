@@ -368,3 +368,181 @@ TEST(test_converter, throw_if_invalid_characters)
   converter conv;
   ASSERT_ANY_THROW(conv.setRoman(rm));
 }
+
+TEST(test_converter, throw_if_Arabic_greater_than_3999)
+{
+  arabic ar(34567);
+  converter conv;
+  ASSERT_ANY_THROW(conv.setArabic(ar));
+}
+
+TEST(test_converter, can_convert_Roman_if_incorrect_number_form_1_IC)
+{
+  roman rm("IC");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(99, v.value);
+}
+
+TEST(test_converter, can_convert_Roman_if_incorrect_number_form_1_VD)
+{
+  roman rm("VD");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(495, v.value);
+}
+
+TEST(test_converter, can_convert_Roman_if_incorrect_number_form_1_XD)
+{
+  roman rm("XD");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(490, v.value);
+}
+
+TEST(test_converter, can_convert_Roman_if_incorrect_number_form_1_LC)
+{
+  roman rm("LC");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(50, v.value);
+}
+
+TEST(test_converter, can_convert_Roman_if_incorrect_number_form_1_DM)
+{
+  roman rm("DM");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(500, v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_1_ID)
+{
+  roman rm("ID");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("CDXCIX", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_1_VM)
+{
+  roman rm("VM");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("CMXCV", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_1_XM)
+{
+  roman rm("XM");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("CMXC", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_1_LD)
+{
+  roman rm("LD");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("CDL", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_1_DM)
+{
+  roman rm("DM");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("D", v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_twelve_I)
+{
+  roman rm("IIIIIIIIIIII");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(12, v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_ten_V)
+{
+  roman rm("VVVVVVVVVV");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(50, v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_five_X)
+{
+  roman rm("XXXXX");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(50, v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_fifteen_L)
+{
+  roman rm("LLLLLLLLLLLLLLL");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(750, v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_twenty_C)
+{
+  roman rm("CCCCCCCCCCCCCCCCCCCC");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(2000, v.value);
+}
+
+TEST(test_converter, convert_Roman_if_incorrect_number_form_2_four_D)
+{
+  roman rm("DDDD");
+  converter conv;
+  conv.setRoman(rm);
+  arabic v = conv.getArabic();
+  EXPECT_EQ(2000, v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_2_V)
+{
+  roman rm("VVVVVVVVVVVVVVV");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("LXXV", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_2_D)
+{
+  roman rm("DDDD");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("MM", v.value);
+}
+
+TEST(test_converter, convert_converts_Roman_to_the_correct_form_2_I)
+{
+  roman rm("IIIIIIIIIIIII");
+  converter conv;
+  conv.setRoman(rm);
+  roman v = conv.getRoman();
+  EXPECT_EQ("XIII", v.value);
+}

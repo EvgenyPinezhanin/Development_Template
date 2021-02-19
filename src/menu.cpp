@@ -59,16 +59,20 @@ void menuConverter::romanToArabic() {
 	converter conv;
 	cout << "To exit, press 0" << endl;
 	while (true) {
-		cout << "Enter roman number: ";
-		cin >> k;
+		try {
+			cout << "Enter roman number: ";
+			cin >> k;
 #if defined(_MSC_VER)
 #elif defined(__unix)
-		getch();
+			getch();
 #endif
-		if (k == "0") break;
-		rom.value = k;
-		conv.setRoman(rom);
-		cout << "Arabic number: " << conv.getArabic().value << endl;
+			if (k == "0") break;
+			rom.value = k;
+			conv.setRoman(rom);
+			cout << "Arabic number: " << conv.getArabic().value << endl;
+		} catch(const std::exception& e) {
+			std::cerr << e.what() << '\n';
+		}
 	}
 }
 
@@ -78,16 +82,20 @@ void menuConverter::arabicToRoman() {
 	converter conv;
 	cout << "To exit, press 0" << endl;
 	while (true) {
-		cout << "Enter arabic number: ";
-		cin >> k;
+		try {
+			cout << "Enter arabic number: ";
+			cin >> k;
 #if defined(_MSC_VER)
 #elif defined(__unix)
-		getch();
+			getch();
 #endif
-		if (k == 0) break;
-		ar.value = k;
-		conv.setArabic(ar);
-		cout << "Roman number: " << conv.getRoman().value << endl;
+			if (k == 0) break;
+			ar.value = k;
+			conv.setArabic(ar);
+			cout << "Roman number: " << conv.getRoman().value << endl;
+		} catch(const std::exception& e) {
+			std::cerr << e.what() << '\n';
+		}
 	}
 }
 
@@ -108,7 +116,7 @@ void menuConverter::searchRomanInText() {
 			i++;
 		} else if (state == q1) {
 			for (int j = 0; j < sizeArr; j++) {
-				if (chr == arrNum[j]) {
+				if (chr == arrNum[j].c) {
                 	tmp = chr;
                 	state = q2;
 					if (i == textOut.length() - 1) state = q2;
@@ -119,7 +127,7 @@ void menuConverter::searchRomanInText() {
 		} else if (state == q2) {
 			state = q3;
 			for (int j = 0; j < sizeArr; j++) {
-				if (chr == arrNum[j]) {
+				if (chr == arrNum[j].c) {
                 	tmp += chr;
                 	if (i != textOut.length() - 1) state = q2;
 						else i++;
