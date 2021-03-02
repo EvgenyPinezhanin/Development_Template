@@ -13,6 +13,15 @@ public:
     int getX() const;
     int getY() const;
     int getZ() const;
+    int getS() const;
+    int getCoeff() const;
+
+    bool operator==(const monomial& m) const;
+    bool operator!=(const monomial& m) const;
+    bool operator>(const monomial& m) const;
+    bool operator>=(const monomial& m) const;
+    bool operator<(const monomial& m) const;
+    bool operator<=(const monomial& m) const;
 
     monomial operator*(const int& val);
     monomial& operator*=(const int& val);
@@ -21,8 +30,8 @@ public:
     monomial& operator+=(const monomial& m);
     monomial operator-(const monomial& m);
     monomial& operator-=(const monomial& m);
-    monomial operator*(const monomial& m); 
-    monomial& operator*=(const monomial& m); 
+    monomial operator*(const monomial& m);
+    monomial& operator*=(const monomial& m);
 
     friend ostream& operator<<(ostream &ostr, const monomial &m);
 };
@@ -30,8 +39,24 @@ public:
 class polynomial {
 private:
     List<monomial> *listMonom;
-    void addMonom(int coeff, int x, int y, int z);
+    listIterator<monomial> iter;
+
+    //void addMonom(int coeff, int x, int y, int z);
 public:
     polynomial();
     ~polynomial();
+
+    void addMonom(int coeff, int x, int y, int z);
+
+    polynomial operator*(const int& val);
+    polynomial& operator*=(const int& val);
+
+    polynomial operator+(const polynomial& m);
+    polynomial& operator+=(const polynomial& m);
+    polynomial operator-(const polynomial& m);
+    polynomial& operator-=(const polynomial& m);
+    polynomial operator*(const polynomial& m);
+    polynomial& operator*=(const polynomial& m);
+
+    friend ostream& operator<<(ostream &ostr, polynomial &m);
 };

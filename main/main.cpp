@@ -15,7 +15,11 @@ int main() {
 	//}
 	//cout << endl;
 	//cout << list << endl;
-	monomial m(45, 3, 5, 10);
-	cout << m << endl;
+	//monomial m(45, 3, 5, 10);
+	//cout << m << endl;
+	polynomial polynom;
+	polynom.addMonom(5, 10, 17, 3);
+	polynom.addMonom(4, 15, 1, 2);
+	cout << polynom << endl;
 	return 0;
 }
