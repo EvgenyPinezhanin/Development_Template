@@ -20,11 +20,16 @@ public:
 
     listIterator& operator=(const listIterator& iter);
 
+    bool operator==(const listIterator& m) const;
+    bool operator!=(const listIterator& m) const;
+
     bool hasNext();
     bool hasPrev();
 
-    T next();
-    T prev();
+    T& getValue();
+
+    void next();
+    void prev();
 };
 
 template<class T>
@@ -34,6 +39,16 @@ template<class T>
 listIterator<T>& listIterator<T>::operator=(const listIterator& iter) {
     currLink = iter.currLink;
     return *this;
+}
+
+template<class T>
+bool listIterator<T>::operator==(const listIterator& m) const {
+    return (currLink == m.currLink);
+}
+
+template<class T>
+bool listIterator<T>::operator!=(const listIterator& m) const {
+    return (currLink != m.currLink);
 }
 
 template<class T>
@@ -47,18 +62,21 @@ bool listIterator<T>::hasPrev() {
 }
 
 template<class T>
-T listIterator<T>::next() {
+T& listIterator<T>::getValue() {
     if (!hasNext()) throw logic_error("Going outside the list");
-    Link<T>* tmpLink = currLink;
-    currLink = currLink->next;
-    return tmpLink->value;
+    return currLink->value;
 }
 
 template<class T>
-T listIterator<T>::prev() {
+void listIterator<T>::next() {
+    if (!hasNext()) throw logic_error("Going outside the list");
+    currLink = currLink->next;
+}
+
+template<class T>
+void listIterator<T>::prev() {
     if (!hasPrev()) throw logic_error("Going outside the list");
     currLink = currLink->prev;
-    return currLink->value;
 }
 
 template<class T>
@@ -146,13 +164,13 @@ List<T>& List<T>::operator=(const List<T>& l) {
     if (first != l.first) {
 		while (!empty()) {
             this->pop_back();
-        }
-		Link<T>* tmpLink = l.first;
-        while (tmpLink != l.pastLast) {
-            push_back(tmpLink->value);
-            tmpLink = tmpLink->next;
-        }
-	}
+        } 
+    }
+    Link<T>* tmpLink = l.first;
+    while (tmpLink != l.pastLast) {
+        push_back(tmpLink->value);
+        tmpLink = tmpLink->next;
+    }
 	return *this;
 }
 
