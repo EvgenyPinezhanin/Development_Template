@@ -195,14 +195,23 @@ TEST(test_monomial, cant_multiply_monomials_if_resulting_power_exceeds_the_maxim
 
 TEST(test_polynomial, can_create_polynomial)
 {
-    ASSERT_NO_THROW(polynomial m);
+    polynomial m;
+    listIterator<monomial> iter = m.getIterBeginMonom();
+    EXPECT_EQ(0, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(0, 0), iter.getValue());
 }
 
 TEST(test_polynomial, can_create_copied_polynomial)
 {
     polynomial m;
     m += monomial(5, 345);
-    ASSERT_NO_THROW(polynomial m1(m));
+    polynomial m1(m);
+
+    listIterator<monomial> iter1 = m.getIterBeginMonom();
+    listIterator<monomial> iter2 = m1.getIterBeginMonom();
+
+    EXPECT_EQ(5, iter2.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter2.getValue());
 }
 
 TEST(test_polynomial, can_assign_polynomials)
@@ -210,102 +219,235 @@ TEST(test_polynomial, can_assign_polynomials)
     polynomial m;
     m += monomial(5, 345);
     polynomial m1;
-    ASSERT_NO_THROW(m1 = m);
+    m1 = m;
+
+    listIterator<monomial> iter1 = m.getIterBeginMonom();
+    listIterator<monomial> iter2 = m1.getIterBeginMonom();
+
+    EXPECT_EQ(5, iter2.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter2.getValue());
 }
-/*
+
 TEST(test_polynomial, can_multiply_by_a_scalar_1)
 {
-    //listIterator<monomial>
-   // polynomial m;
-   // m += monomial(5, 345);
-    //int scl = 10;
-   // m = m * scl;
-   // EXPECT_EQ(50, m..getCoeff());
+    listIterator<monomial> iter;
+    polynomial m;
+    m += monomial(5, 345);
+    int scl = 10;
+    m = m * scl;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(50, iter.getValue().getCoeff());
 }
+
 
 TEST(test_polynomial, can_multiply_by_a_scalar_2)
 {
-    polynomial m(5, 5, 6, 7);
+    listIterator<monomial> iter;
+    polynomial m;
+    m += monomial(5, 345);
     int scl = 10;
     m *= scl;
-    EXPECT_EQ(50, m.getCoeff());
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(50, iter.getValue().getCoeff());
 }
+
+TEST(test_polynomial, can_add_nomomial_1)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    monomial mon(5, 345);
+    m = m + mon;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
+}
+
+TEST(test_polynomial, can_add_nomomial_2)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    m += monomial(5, 345);
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
+}
+
+TEST(test_polynomial, can_subtract_monomial_1)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    m = m - monomial(5, 345);
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(-5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
+}
+
+TEST(test_polynomial, can_subtract_monomial_2)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    m -= monomial(5, 345);
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(-5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
+}
+
+TEST(test_polynomial, can_multiply_monomial_1)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    m = m * monomial(3, 9, 7, 3);
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 14, 10, 10), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 10, 10, 12), iter.getValue());
+}
+
+TEST(test_polynomial, can_multiply_monomial_2)
+{
+    listIterator<monomial> iter;
+    polynomial m;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    m *= monomial(3, 9, 7, 3);
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 14, 10, 10), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 10, 10, 12), iter.getValue());
+}
+
 
 TEST(test_polynomial, can_add_polynomials_1)
 {
-    polynomial m1(5, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m3(0, 0);
-    m3 = m1 + m2;
-    EXPECT_EQ(10, m3.getCoeff());
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 345);
+    m1 += monomial(10, 894);
+    m += m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(10, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(10, 894), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
 }
 
 TEST(test_polynomial, can_add_polynomials_2)
 {
-    polynomial m1(5, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m(5, 10, 12, 14);
-    m1 += m2;
-    EXPECT_EQ(10, m1.getCoeff());
-}
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 345);
+    m1 += monomial(10, 894);
+    m = m + m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(10, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(10, 894), iter.getValue());
+    iter.next();
 
-TEST(test_polynomial, cant_add_polynomials_if_different_power_of_polynomials)
-{
-    polynomial m1(5, 5, 9, 7);
-    polynomial m2(5, 10, 6, 7);
-    ASSERT_ANY_THROW(m1 + m2);
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
 }
 
 TEST(test_polynomial, can_subtract_polynomials_1)
 {
-    polynomial m1(10, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m3(0, 0);
-    m3 = m1 - m2;
-    EXPECT_EQ(5, m3.getCoeff());
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 345);
+    m1 += monomial(10, 894);
+    m -= m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(-10, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(-10, 894), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
 }
 
 TEST(test_polynomial, can_subtract_polynomials_2)
 {
-    polynomial m1(10, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m(5, 10, 12, 14);
-    m1 -= m2;
-    EXPECT_EQ(5, m1.getCoeff());
-}
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 345);
+    m1 += monomial(10, 894);
+    m = m - m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(-10, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(10, 894), iter.getValue());
+    iter.next();
 
-TEST(test_polynomial, cant_subtract_polynomials_if_different_power_of_polynomials)
-{
-    polynomial m1(10, 5, 9, 7);
-    polynomial m2(5, 10, 6, 7);
-    ASSERT_ANY_THROW(m1 - m2);
+    EXPECT_EQ(5, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(5, 345), iter.getValue());
 }
 
 TEST(test_polynomial, can_multiply_polynomials_1)
 {
-    polynomial m1(5, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m3(0, 0);
-    polynomial m(25, 10, 12, 14);
-    m3 = m1 * m2;
-    EXPECT_EQ(m, m3);
-    EXPECT_EQ(m.getCoeff(), m3.getCoeff());
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    m1 += monomial(3, 9, 7, 3);
+    m1 += monomial(7, 7, 6, 5);
+    m = m * m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 14, 10, 10), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(35, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(35, 12, 9, 12), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 10, 10, 12), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(35, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(35, 8, 9, 14), iter.getValue());
 }
 
 TEST(test_polynomial, can_multiply_polynomials_2)
 {
-    polynomial m1(5, 5, 6, 7);
-    polynomial m2(5, 5, 6, 7);
-    polynomial m3(0, 0);
-    polynomial m(25, 10, 12, 14);
-    m1 *= m2;
-    EXPECT_EQ(m, m1);
-    EXPECT_EQ(m.getCoeff(), m1.getCoeff());
+    listIterator<monomial> iter;
+    polynomial m, m1;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    m1 += monomial(3, 9, 7, 3);
+    m1 += monomial(7, 7, 6, 5);
+    m *= m1;
+    iter = m.getIterBeginMonom();
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 14, 10, 10), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(35, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(35, 12, 9, 12), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(15, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(15, 10, 10, 12), iter.getValue());
+    iter.next();
+
+    EXPECT_EQ(35, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(35, 8, 9, 14), iter.getValue());
 }
 
 TEST(test_polynomial, cant_multiply_polynomials_if_resulting_power_exceeds_the_maximum)
 {
-    polynomial m1(10, 5, 17, 7);
-    polynomial m2(5, 10, 6, 5);
-    ASSERT_ANY_THROW(m1 * m2);
-}*/
+    polynomial m, m1;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    m1 += monomial(3, 15, 7, 3);
+    m1 += monomial(7, 7, 6, 5);
+    m *= m1;
+    ASSERT_ANY_THROW(m1 * m);
+}

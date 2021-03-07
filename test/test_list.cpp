@@ -134,7 +134,7 @@ TEST(test_listIterator, can_get_iterator_to_begin)
     list.push_front(1);
     list.push_front(105);
     listIterator<int> iter = list.begin();
-    EXPECT_EQ(105, iter.next());
+    EXPECT_EQ(105, iter.getValue());
 }
 
 TEST(test_listIterator, can_get_iterator_to_end)
@@ -143,7 +143,8 @@ TEST(test_listIterator, can_get_iterator_to_end)
     list.push_front(1);
     list.push_front(105);
     listIterator<int> iter = list.end();
-    EXPECT_EQ(1, iter.prev());
+    iter.prev();
+    EXPECT_EQ(1, iter.getValue());
 }
 
 TEST(test_listIterator, can_assign_iterator)
@@ -153,7 +154,8 @@ TEST(test_listIterator, can_assign_iterator)
     list.push_front(105);
     listIterator<int> iter1 = list.end();
     listIterator<int> iter2 = iter1;
-    EXPECT_EQ(1, iter2.prev());
+    iter2.prev();
+    EXPECT_EQ(1, iter2.getValue());
 }
 
 TEST(test_listIterator, if_next_link_NULL_hasNext_false)
@@ -198,7 +200,7 @@ TEST(test_listIterator, can_get_current_element)
     list.push_back(1);
     list.push_back(105);
     listIterator<int> iter = list.begin();
-    EXPECT_EQ(1, iter.next());
+    EXPECT_EQ(1, iter.getValue());
 }
 
 TEST(test_listIterator, can_go_next_element)
@@ -208,7 +210,7 @@ TEST(test_listIterator, can_go_next_element)
     list.push_back(105);
     listIterator<int> iter = list.begin();
     iter.next();
-    EXPECT_EQ(105, iter.next());
+    EXPECT_EQ(105, iter.getValue());
 }
 
 TEST(test_listIterator, throw_if_next_element_NULL)
@@ -226,7 +228,8 @@ TEST(test_listIterator, can_get_current_element_prev)
     list.push_back(1);
     list.push_back(105);
     listIterator<int> iter = list.end();
-    EXPECT_EQ(105, iter.prev());
+    iter.prev();
+    EXPECT_EQ(105, iter.getValue());
 }
 
 TEST(test_listIterator, can_go_prev_element)
@@ -236,7 +239,8 @@ TEST(test_listIterator, can_go_prev_element)
     list.push_back(105);
     listIterator<int> iter = list.end();
     iter.prev();
-    EXPECT_EQ(1, iter.prev());
+    iter.prev();
+    EXPECT_EQ(1, iter.getValue());
 }
 
 TEST(test_listIterator, throw_if_prev_element_NULL)
@@ -259,7 +263,7 @@ TEST(test_listIterator, can_insert_element)
     iter.next();
     iter.next();
     iter = list.insert(iter, 10);
-    EXPECT_EQ(10, iter.next());
+    EXPECT_EQ(10, iter.getValue());
 }
 
 TEST(test_listIterator, can_insert_element_first)
@@ -271,7 +275,7 @@ TEST(test_listIterator, can_insert_element_first)
     list.push_back(4);
     listIterator<int> iter = list.begin();
     iter = list.insert(iter, 10);
-    EXPECT_EQ(10, iter.next());
+    EXPECT_EQ(10, iter.getValue());
 }
 
 TEST(test_listIterator, can_insert_element_last)
@@ -283,7 +287,7 @@ TEST(test_listIterator, can_insert_element_last)
     list.push_back(4);
     listIterator<int> iter = list.end();
     iter = list.insert(iter, 10);
-    EXPECT_EQ(10, iter.next());
+    EXPECT_EQ(10, iter.getValue());
 }
 
 TEST(test_listIterator, can_erase_element)
@@ -297,7 +301,7 @@ TEST(test_listIterator, can_erase_element)
     iter.next();
     iter.next();
     iter = list.erase(iter);
-    EXPECT_EQ(4, iter.next());
+    EXPECT_EQ(4, iter.getValue());
 }
 
 TEST(test_listIterator, can_erase_element_first)
@@ -309,7 +313,7 @@ TEST(test_listIterator, can_erase_element_first)
     list.push_back(4);
     listIterator<int> iter = list.begin();
     iter = list.erase(iter);
-    EXPECT_EQ(2, iter.next());
+    EXPECT_EQ(2, iter.getValue());
 }
 
 TEST(test_listIterator, can_erase_element_last)
@@ -322,7 +326,7 @@ TEST(test_listIterator, can_erase_element_last)
     listIterator<int> iter = list.end();
     iter.prev();
     iter = list.erase(iter);
-    EXPECT_EQ(3, iter.next());
+    EXPECT_EQ(3, iter.getValue());
 }
 
 TEST(test_listIterator, throw_if_erase_iterator_to_end)

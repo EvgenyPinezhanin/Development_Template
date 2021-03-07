@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list.h>
+#include <cmath>
 
 const int maxPower = 21;
 
@@ -50,7 +51,10 @@ public:
     polynomial(const polynomial& p);
     ~polynomial();
 
-    int getSum();
+    int getValue(int x, int y, int z) const;
+
+    listIterator<monomial> getIterBeginMonom();
+    listIterator<monomial> getIterEndMonom();
 
     polynomial& operator=(const polynomial& p);
 

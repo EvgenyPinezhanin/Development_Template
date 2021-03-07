@@ -30,6 +30,6 @@ int main() {
 	polynom1 *= polynom2;
 	clock_t time_end = clock() - time_start;
 	cout <<  (double)time_end / CLOCKS_PER_SEC << " s" << endl;
-	cout << polynom1.getSum() << endl;
+	cout << polynom1.getValue(1, 1, 1) << endl;
 	return 0;
 }

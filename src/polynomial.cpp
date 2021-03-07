@@ -124,14 +124,15 @@ ostream& operator<<(ostream &ostr, const monomial &m) {
     return ostr;
 }
 
-int polynomial::getSum() {
-    iter = listMonom->begin();
-    int sum = 0.0;
-    while (iter.hasNext()) {
-        sum += iter.getValue().getCoeff();
-        iter.next();
+int polynomial::getValue(int x, int y, int z) const {
+    listIterator<monomial> tmpIter = listMonom->begin();
+    int value = 0;
+    while (tmpIter.hasNext()) {
+        monomial tmpM = tmpIter.getValue();
+        value += tmpM.getCoeff() * pow(x, tmpM.getX()) * pow(y, tmpM.getY()) * pow(z, tmpM.getZ());
+        tmpIter.next();
     }
-    return sum;
+    return value;
 }
 
 polynomial::polynomial() {
@@ -146,6 +147,14 @@ polynomial::polynomial(const polynomial& p) {
 
 polynomial::~polynomial() {
     delete listMonom;
+}
+
+listIterator<monomial> polynomial::getIterBeginMonom() {
+    return listMonom->begin();
+}
+
+listIterator<monomial> polynomial::getIterEndMonom() {
+    return listMonom->end();
 }
 
 polynomial& polynomial::operator=(const polynomial& p) {
@@ -185,12 +194,12 @@ polynomial& polynomial::operator*=(const int& val) {
 
 polynomial polynomial::operator+(const monomial& m) {
     polynomial tmp(*this);
-    tmp.iter = listMonom->begin();
+    tmp.iter = tmp.listMonom->begin();
     if (m.getCoeff() != 0) {
         while (tmp.iter.hasNext()) {
             monomial &currM = tmp.iter.getValue();
             if (m > currM || !tmp.iter.hasNext()) {
-                tmp.iter = tmp.listMonom->insert(iter, m);
+                tmp.iter = tmp.listMonom->insert(tmp.iter, m);
                 break;
             } else if (m == currM) {
                 currM += m;
@@ -222,12 +231,12 @@ polynomial& polynomial::operator+=(const monomial& m) {
 
 polynomial polynomial::operator-(const monomial& m) {
     polynomial tmp(*this);
-    tmp.iter = listMonom->begin();
+    tmp.iter = tmp.listMonom->begin();
     if (m.getCoeff() != 0) { 
         while (tmp.iter.hasNext()) {
             monomial &currM = tmp.iter.getValue();
             if (m > currM || !tmp.iter.hasNext()) {
-                tmp.iter = tmp.listMonom->insert(iter, -m);
+                tmp.iter = tmp.listMonom->insert(tmp.iter, -m);
                 break;
             } else if (m == currM) {
                 currM -= m;
@@ -298,7 +307,7 @@ polynomial polynomial::operator+(const polynomial& m) {
             monomial &m2 = tmp.iter.getValue();
             if (m1.getCoeff() != 0) {
                 if (m1 > m2 || !tmp.iter.hasNext()) {
-                    tmp.iter = tmp.listMonom->insert(iter, m1);
+                    tmp.iter = tmp.listMonom->insert(tmp.iter, m1);
                     tmp.iter.next();
                     break;
                 } else if (m1 == m2) {
@@ -349,7 +358,7 @@ polynomial polynomial::operator-(const polynomial& m) {
             monomial &m2 = tmp.iter.getValue();
             if (m1.getCoeff() != 0) {
                 if (m1 > m2 || !tmp.iter.hasNext()) {
-                    tmp.iter = tmp.listMonom->insert(iter, -m1);
+                    tmp.iter = tmp.listMonom->insert(tmp.iter, -m1);
                     tmp.iter.next();
                     break;
                 } else if (m1 == m2) {
@@ -393,27 +402,23 @@ polynomial& polynomial::operator-=(const polynomial& m) {
 polynomial polynomial::operator*(const polynomial& m) {
     polynomial tmp1(*this);
     polynomial tmp2;
-    polynomial tmp3;
     listIterator<monomial> iterM = m.listMonom->begin();
     while (iterM.hasNext()) {
-        tmp2 = tmp1 * iterM.getValue();
-        tmp3 += tmp2;
+        tmp2 += tmp1 * iterM.getValue();
         iterM.next();
     }
-    return tmp3;
+    return tmp2;
 }
 
 polynomial& polynomial::operator*=(const polynomial& m) {
     polynomial tmp1(*this);
     polynomial tmp2;
-    polynomial tmp3;
     listIterator<monomial> iterM = m.listMonom->begin();
     while (iterM.hasNext()) {
-        tmp2 = tmp1 * iterM.getValue();
-        tmp3 += tmp2;
+        tmp2 += tmp1 * iterM.getValue();
         iterM.next();
     }
-    *this = tmp3;
+    *this = tmp2;
     return *this;
 }
 
