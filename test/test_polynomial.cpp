@@ -13,9 +13,14 @@ TEST(test_monomial, can_create_monomial_with_powers)
     ASSERT_NO_THROW(monomial m(5, 5, 6, 7));
 }
 
-TEST(test_monomial, cant_create_monomial_if_power_is_greater_than_the_maximum_power)
+TEST(test_monomial, cant_create_monomial_if_power_is_greater_than_the_maximum_power_1)
 {
     ASSERT_ANY_THROW(monomial m(5, 5, 25, 7));
+}
+
+TEST(test_monomial, cant_create_monomial_if_power_is_greater_than_the_maximum_power_2)
+{
+    ASSERT_ANY_THROW(monomial m(5, 9261));
 }
 
 TEST(test_monomial, can_get_power_x)
@@ -193,6 +198,13 @@ TEST(test_monomial, cant_multiply_monomials_if_resulting_power_exceeds_the_maxim
     ASSERT_ANY_THROW(m1 * m2);
 }
 
+TEST(test_monomial, can_change_the_sign_of_the_coefficient_monomials)
+{
+    monomial m(10, 5, 9, 7);
+    m = -m;
+    EXPECT_EQ(-10, m.getCoeff());
+}
+
 TEST(test_polynomial, can_create_polynomial)
 {
     polynomial m;
@@ -212,6 +224,31 @@ TEST(test_polynomial, can_create_copied_polynomial)
 
     EXPECT_EQ(5, iter2.getValue().getCoeff());
     EXPECT_EQ(monomial(5, 345), iter2.getValue());
+}
+
+TEST(test_polynomial, can_get_iterator_to_begin_monom)
+{
+    polynomial m;
+    m += monomial(5, 345);
+    m += monomial(10, 2345);
+
+    listIterator<monomial> iter = m.getIterBeginMonom();
+
+    EXPECT_EQ(10, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(10, 2345), iter.getValue());
+}
+
+TEST(test_polynomial, can_get_iterator_to_end_monom)
+{
+    polynomial m;
+    m += monomial(5, 345);
+    m += monomial(10, 2345);
+
+    listIterator<monomial> iter = m.getIterEndMonom();
+    iter.prev();
+
+    EXPECT_EQ(0, iter.getValue().getCoeff());
+    EXPECT_EQ(monomial(0, 0), iter.getValue());
 }
 
 TEST(test_polynomial, can_assign_polynomials)
@@ -450,4 +487,12 @@ TEST(test_polynomial, cant_multiply_polynomials_if_resulting_power_exceeds_the_m
     m1 += monomial(7, 7, 6, 5);
     m *= m1;
     ASSERT_ANY_THROW(m1 * m);
+}
+
+TEST(test_polynomial, can_get_the_value_of_a_polynomial_for_different_values_of_variables)
+{
+    polynomial m, m1;
+    m += monomial(5, 5, 3, 7);
+    m += monomial(5, 1, 3, 9);
+    EXPECT_EQ(10444800, m.getValue(3, 4, 2));
 }

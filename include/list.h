@@ -23,17 +23,17 @@ public:
     bool operator==(const listIterator& m) const;
     bool operator!=(const listIterator& m) const;
 
-    bool hasNext();
-    bool hasPrev();
+    bool hasNext() const;
+    bool hasPrev() const;
 
-    T& getValue();
+    T& getValue() const;
 
     void next();
     void prev();
 };
 
 template<class T>
-listIterator<T>::listIterator() {}
+listIterator<T>::listIterator() : currLink(nullptr) {}
 
 template<class T>
 listIterator<T>& listIterator<T>::operator=(const listIterator& iter) {
@@ -52,17 +52,17 @@ bool listIterator<T>::operator!=(const listIterator& m) const {
 }
 
 template<class T>
-bool listIterator<T>::hasNext() {
-    return !(currLink->next == nullptr);
+bool listIterator<T>::hasNext() const{
+    return currLink->next != nullptr;
 }
 
 template<class T>
-bool listIterator<T>::hasPrev() {
-    return !(currLink->prev == nullptr);
+bool listIterator<T>::hasPrev() const{
+    return currLink->prev != nullptr;
 }
 
 template<class T>
-T& listIterator<T>::getValue() {
+T& listIterator<T>::getValue() const{
     if (!hasNext()) throw logic_error("Going outside the list");
     return currLink->value;
 }

@@ -64,7 +64,7 @@ monomial monomial::operator*(const int& val) {
 }
 
 monomial& monomial::operator*=(const int& val) {
-    this->coefficient *= val;
+    coefficient *= val;
     return *this;
 }
 
@@ -120,7 +120,7 @@ monomial monomial::operator-() const {
 }
 
 ostream& operator<<(ostream &ostr, const monomial &m) {
-    ostr << m.coefficient << "*" << "x^" << m.getX() << "y^" << m.getY() << "z^" << m.getZ();
+    ostr << m.coefficient << "*" << "x^" << m.getX() << "*y^" << m.getY() << "*z^" << m.getZ();
     return ostr;
 }
 

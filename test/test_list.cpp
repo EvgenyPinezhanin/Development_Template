@@ -158,6 +158,26 @@ TEST(test_listIterator, can_assign_iterator)
     EXPECT_EQ(1, iter2.getValue());
 }
 
+TEST(test_listIterator, can_compare_the_listIterators_for_equality)
+{
+    List<int> list;
+    list.push_front(1);
+    list.push_front(105);
+    listIterator<int> iter1 = list.begin();
+    listIterator<int> iter2 = list.begin();
+    EXPECT_EQ(iter1, iter2);
+}
+
+TEST(test_listIterator, can_compare_the_listIterators_on_inequality)
+{
+    List<int> list;
+    list.push_front(1);
+    list.push_front(105);
+    listIterator<int> iter1 = list.begin();
+    listIterator<int> iter2 = list.end();
+    EXPECT_NE(iter1, iter2);
+}
+
 TEST(test_listIterator, if_next_link_NULL_hasNext_false)
 {
     List<int> list;
@@ -201,6 +221,15 @@ TEST(test_listIterator, can_get_current_element)
     list.push_back(105);
     listIterator<int> iter = list.begin();
     EXPECT_EQ(1, iter.getValue());
+}
+
+TEST(test_listIterator, cant_get_current_element_if_iterator_points_to_the_end)
+{
+    List<int> list;
+    list.push_back(1);
+    list.push_back(105);
+    listIterator<int> iter = list.end();
+    ASSERT_ANY_THROW(iter.getValue());
 }
 
 TEST(test_listIterator, can_go_next_element)
