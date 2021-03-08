@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(PROJECT_NAME task_planner)
+set(PROJECT_NAME list_loop)
 project(${PROJECT_NAME})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
