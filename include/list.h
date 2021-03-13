@@ -63,19 +63,19 @@ bool listIterator<T>::hasPrev() const{
 
 template<class T>
 T& listIterator<T>::getValue() const{
-    if (!hasNext()) throw logic_error("Going outside the list");
+    //if (!hasNext()) throw logic_error("Going outside the list");
     return currLink->value;
 }
 
 template<class T>
 void listIterator<T>::next() {
-    if (!hasNext()) throw logic_error("Going outside the list");
+    //if (!hasNext()) throw logic_error("Going outside the list");
     currLink = currLink->next;
 }
 
 template<class T>
 void listIterator<T>::prev() {
-    if (!hasPrev()) throw logic_error("Going outside the list");
+    //if (!hasPrev()) throw logic_error("Going outside the list");
     currLink = currLink->prev;
 }
 

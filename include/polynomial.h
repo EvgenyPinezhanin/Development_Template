@@ -17,6 +17,7 @@ public:
     int getY() const;
     int getZ() const;
     int getS() const;
+    void getXYZ(int& x, int& y, int& z) const;
     int getCoeff() const;
 
     bool operator==(const monomial& m) const;

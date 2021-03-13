@@ -29,6 +29,12 @@ int monomial::getS() const {
     return S;
 }
 
+void monomial::getXYZ(int& x, int& y, int& z) const {
+    x = S / (maxPower * maxPower);
+    y = (S - x * maxPower * maxPower) / maxPower;
+    z = S - x * maxPower * maxPower - y * maxPower;
+}
+
 int monomial::getCoeff() const {
     return coefficient;
 }
@@ -105,9 +111,16 @@ monomial monomial::operator*(const monomial& m) const {
 } 
 
 monomial& monomial::operator*=(const monomial& m) {
-    if (getX() + m.getX() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
-    if (getY() + m.getY() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
-    if (getZ() + m.getZ() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    int x,y,z;
+    int x1, y1, z1;
+    getXYZ(x, y, z);
+    m.getXYZ(x1, y1, z1);
+    if (x + x1 >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    if (y + y1 >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    if (z + z1 >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    //if (getX() + m.getX() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    //if (getY() + m.getY() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
+    //if (getZ() + m.getZ() >= maxPower) throw logic_error("The resulting power exceeds the maximum");
     coefficient *= m.coefficient;
     S += m.S;
     return *this;
