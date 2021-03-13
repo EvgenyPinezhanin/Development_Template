@@ -27,9 +27,9 @@ int main()
     cout << "the second method " << "list1 " << list1.CheckLoop2() << endl;
 	cout << "the second method " << "list2 " << list2.CheckLoop2() << endl;
 
-    //cout << list1 << endl;
+    cout << list1 << endl;
     cout << "the third method " << "list1 " << list1.CheckLoop3() << endl;
-    //cout << list1 << endl;
+    cout << list1 << endl;
 	cout << "the third method " << "list2 " << list2.CheckLoop3() << endl;
 
     return 0;
