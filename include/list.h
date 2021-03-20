@@ -112,8 +112,8 @@ public:
     bool empty() const;
     int getSize() const;
 
-    listIterator<T> insert(const listIterator<T>& pos, const T& l);//OK
-    listIterator<T> erase(const listIterator<T>& pos);//OK
+    listIterator<T> insert(const listIterator<T>& pos, const T& l);
+    listIterator<T> erase(const listIterator<T>& pos);
     void push_back(const T& l);
     void pop_back();
     void push_front(const T& l);
