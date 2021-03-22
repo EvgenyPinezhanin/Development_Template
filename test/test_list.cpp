@@ -18,6 +18,17 @@ TEST(test_list, can_create_copy_list)
     ASSERT_NO_THROW(List<int> list2(list1));
 }
 
+TEST(test_list, can_create_list_with_aggregate_initialization)
+{
+    List<int> list{10, 20, 30};
+    listIterator<int> iter = list.begin();
+    EXPECT_EQ(10, iter.getValue());
+    iter.next();
+    EXPECT_EQ(20, iter.getValue());
+    iter.next();
+    EXPECT_EQ(30, iter.getValue());
+}
+
 TEST(test_list, can_assign_list)
 {
     List<int> list1;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include<iostream>
+#include<initializer_list>
 
 using namespace std;
 
@@ -63,19 +64,19 @@ bool listIterator<T>::hasPrev() const{
 
 template<class T>
 T& listIterator<T>::getValue() const{
-    //if (!hasNext()) throw logic_error("Going outside the list");
+    if (!hasNext()) throw logic_error("Going outside the list");
     return currLink->value;
 }
 
 template<class T>
 void listIterator<T>::next() {
-    //if (!hasNext()) throw logic_error("Going outside the list");
+    if (!hasNext()) throw logic_error("Going outside the list");
     currLink = currLink->next;
 }
 
 template<class T>
 void listIterator<T>::prev() {
-    //if (!hasPrev()) throw logic_error("Going outside the list");
+    if (!hasPrev()) throw logic_error("Going outside the list");
     currLink = currLink->prev;
 }
 
@@ -99,6 +100,7 @@ private:
 public:
     List();
     List(const List<T>& l);
+    List(initializer_list<T> init);
     ~List();
 
     List<T>& operator=(const List<T>& l);
@@ -125,13 +127,9 @@ public:
 };
 
 template<class T>
-List<T>::List()
-{
-    first = nullptr;
-    last = nullptr;
+List<T>::List() : first(nullptr), last(nullptr), size(0) {
     Link<T> *link = new Link<T>(0, nullptr, nullptr);
     pastLast = link;
-    size = 0;
 }
 
 template<class T>
@@ -149,10 +147,17 @@ List<T>::List(const List<T>& l)
     }
 }
 
+template<class T>
+List<T>::List(initializer_list<T> init) : first(nullptr), last(nullptr), size(0) {
+    Link<T> *link = new Link<T>(0, nullptr, nullptr);
+    pastLast = link;
+    for (auto& item : init) {
+        push_back(item);
+    }
+}
 
 template<class T>
-List<T>::~List()
-{
+List<T>::~List() {
     while(!empty()) {
         this->pop_back();
     }
