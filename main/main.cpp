@@ -7,6 +7,9 @@ int main() {
 	Text t;
 	int op;
 
+	ifstream f("open.text");
+	f >> t;
+
 	while (true) {
 		system("clear");
 
@@ -20,12 +23,15 @@ int main() {
 		cout << "5.Add Down\n";
 		cout << "6.Del Curr\n";
 		cout << "7.Del Down\n";
+		cout << "8.Rename Curr\n";
 		cin >> op;
-		
+		ofstream f("open.text");
 		string tmp;
 		try {
 			switch (op) {
 			case 0:
+				f << t;
+				f.close();
 				return 0;
 				break;
 			case 1:
@@ -50,6 +56,10 @@ int main() {
 				break;
 			case 7:
 				t.delDown();
+				break;
+			case 8:
+				cin >> tmp;
+				t.renameCurr(tmp);
 				break;
 			default:
 				break;

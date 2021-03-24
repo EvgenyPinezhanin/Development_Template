@@ -2,24 +2,28 @@
 
 #include<string>
 #include<iostream>
-#include<stack>
+#include<fstream>
+#include<Collection.h>
 
 using namespace std;
 
-struct Link {
+struct Node {
     string val;
-    Link *next;
-    Link *down;
+    Node *next;
+    Node *down;
 
-    Link(string _val = "", Link *_next = nullptr, Link *_down = nullptr) : val(_val), next(_next), down(_down) {};
+    Node(string _val = "", Node *_next = nullptr, Node *_down = nullptr) : val(_val), next(_next), down(_down) {};
 };
 
 class Text {
-    Link *root;
-    Link *curr;
-    stack<Link*> path;
+    Node *root;
+    Node *curr;
+    Stack<Node*> path;
 
-    void printCurrDownNext(ostream& ostr, Link* root, Link* curr, int level) const;
+    void printCDN(ostream& ostr, Node* root, Node* curr, int level) const;
+    void fprintCDN(ofstream& ofstr, Node* root, int level) const;
+    void freadCDN(ifstream& ifstr, Stack<Node*> *stack, Node* root, int level);
+    void delBranch(Node *n);
 public:
     Text();
 
@@ -29,10 +33,14 @@ public:
     void delCurr();
     void delDown();
 
+    void renameCurr(string str);
+
     void next();
     void down();
     void top();
 
     friend ostream& operator<<(ostream& ostr, const Text& text);
 
+    friend ofstream& operator<<(ofstream& ofstr, const Text& text);
+    friend ifstream& operator>>(ifstream& ifstr, Text& text);
 };
