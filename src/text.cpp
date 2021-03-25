@@ -67,6 +67,12 @@ Text::Text() {
     root = curr = nullptr;
 };
 
+Text::~Text() {
+    while (root != nullptr) {
+        delCurr(); 
+    }
+}
+
 void Text::addNext(string val) {
     if (root == nullptr) {
         root = curr = new Node(val);
@@ -86,7 +92,7 @@ void Text::addDown(string val) {
 }
 
 void Text::delCurr() {
-    if (curr == nullptr) throw "curr == nullptr";
+    if (curr == nullptr) return;
     delDown();
     Node *tmp = curr;
     if (!path.empty()) {
@@ -112,6 +118,24 @@ void Text::delDown() {
 void Text::renameCurr(string str) {
     if (curr == nullptr) throw "curr == nullptr";
     curr->val = str;
+}
+
+bool Text::isNext() {
+    if (curr == nullptr) return false;
+    if (curr->next != nullptr) return true;
+    return false;
+}
+
+bool Text::isDown() {
+    if (curr == nullptr) return false;
+    if (curr->down != nullptr) return true;
+    return false;
+}
+
+bool Text::isTop() {
+    if (curr == nullptr) return false;
+    if (!path.empty()) return true;
+    return false;
 }
 
 void Text::next() {
@@ -148,10 +172,12 @@ ofstream& operator<<(ofstream& ofstr, const Text& text) {
 ifstream& operator>>(ifstream& ifstr, Text& text) {
     if (!ifstr.eof()) {
         Stack<Node *> *stack = new Stack<Node *>;
+        delete &text;
         text.root = new Node;
         getline(ifstr, text.root->val);
         text.freadCDN(ifstr, stack, text.root, 0);
         text.curr = text.root;
+        delete stack;
     }
     return ifstr;
 }

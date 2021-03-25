@@ -26,6 +26,7 @@ class Text {
     void delBranch(Node *n);
 public:
     Text();
+    ~Text();
 
     void addNext(string str);
     void addDown(string str);
@@ -34,6 +35,10 @@ public:
     void delDown();
 
     void renameCurr(string str);
+
+    bool isNext();
+    bool isDown();
+    bool isTop();
 
     void next();
     void down();
