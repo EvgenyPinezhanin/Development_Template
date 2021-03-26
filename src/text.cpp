@@ -25,6 +25,7 @@ void Text::freadCDN(ifstream& ifstr, Stack<Node*> *stack, Node* root, int level)
     if (ifstr.eof()) return;
     string str;
     getline(ifstr, str);
+    if (str == "" && ifstr.eof()) return;
     int count = 0;
     for (int i = 0; i < str.length(); i++) {
         if (str[i] != '\t') break;

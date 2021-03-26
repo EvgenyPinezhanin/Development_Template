@@ -14,8 +14,9 @@ class menuText {
     bool isSaveFile;
     bool isReadFile;
 
-    bool saveFile();
+    void saveFile();
     void loadFile();
+    void createNewFile();
     void menuShowText();
 
 public:
