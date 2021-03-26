@@ -3,6 +3,7 @@
 #include<string>
 #include<iostream>
 #include<fstream>
+#include<stdexcept>
 #include<Collection.h>
 
 using namespace std;
@@ -18,7 +19,7 @@ struct Node {
 class Text {
     Node *root;
     Node *curr;
-    Stack<Node*> path;
+    Stack<Node*> *path;
 
     void printCDN(ostream& ostr, Node* root, Node* curr, int level) const;
     void fprintCDN(ofstream& ofstr, Node* root, int level) const;
@@ -34,11 +35,12 @@ public:
     void delCurr();
     void delDown();
 
-    void renameCurr(string str);
+    void changeCurrString(string str);
+    string getCurrString() const;
 
-    bool isNext();
-    bool isDown();
-    bool isTop();
+    bool isNext() const;
+    bool isDown() const;
+    bool isTop() const;
 
     void next();
     void down();

@@ -23,7 +23,7 @@ void menuText::saveFile() {
 }
 
 void menuText::loadFile() {
-	if (!isSaveFile) saveFile;
+	if (!isSaveFile) saveFile();
 	string str;
 	cout << "Please enter the name of the file: ";
 	getline(cin, str);
@@ -36,7 +36,7 @@ void menuText::loadFile() {
 }
 
 void menuText::createNewFile() {
-	if (!isSaveFile) saveFile;
+	if (!isSaveFile) saveFile();
 	string str;
 	cout << "Please enter the name of the new file: ";
 	getline(cin, str);
@@ -54,8 +54,6 @@ void menuText::menuShowText() {
 	int op = 0;
 	int op_n = 1;
 	string str;
-	string menuItems[] = {
-	{"Back"} };
 
 	while (isOpen)
 	{
@@ -87,7 +85,7 @@ void menuText::menuShowText() {
 			if (text->isTop()) text->top();
 			break;
 		case 66:
-			if (text->isNext())text->next();
+			if (text->isNext()) text->next();
 			break;
 		case 10:
 			if (text->isDown())text->down();
@@ -115,7 +113,7 @@ void menuText::menuShowText() {
 		case 'r':
 			cout << "Please enter the string: ";
 			getline(cin, str);
-			text->renameCurr(str);
+			text->changeCurrString(str);
 			isSaveFile = false;
 			break;
 		case 'q':
