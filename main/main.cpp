@@ -9,12 +9,12 @@ struct elem {
 };
 
 void search(queue<elem> &q, int ** array, int &count, int M, int N) {
+	count++;
 	while (!q.empty()) {
 		int x = q.front().x;
 		int y = q.front().y;
 		q.pop();
 		if (array[x][y] == 0) {
-			count++;
 			array[x][y] = count;
 			if (x - 1 >= 0) {
 				if (array[x-1][y] == 0) q.push(elem(x - 1, y));
