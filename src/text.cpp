@@ -67,7 +67,6 @@ void Text::delBranch(Node *n) {
 Text::Text() {
     root = curr = nullptr;
     path = new Stack<Node*>;
-    cout << path->size() << "  " << path->empty() << endl;
 };
 
 Text::~Text() {
