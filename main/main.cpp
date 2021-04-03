@@ -9,7 +9,6 @@ struct elem {
 };
 
 void search(queue<elem> &q, int ** array, int &count, int M, int N) {
-	count++;
 	while (!q.empty()) {
 		int x = q.front().x;
 		int y = q.front().y;
@@ -60,6 +59,8 @@ int main() {
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			if (array[i][j] == 0) {
+				count++;
+				array[i][j] = count;
 				q.push(elem(i, j));
 				search(q, array, count, M, N);
 			}
