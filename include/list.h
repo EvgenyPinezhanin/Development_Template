@@ -121,6 +121,8 @@ public:
     void push_front(const T& l);
     void pop_front();
 
+    void clear();
+
     template<class V>
 	friend ostream& operator<<(ostream& stream, const List<V>& x);
 
@@ -128,7 +130,7 @@ public:
 
 template<class T>
 List<T>::List() : first(nullptr), last(nullptr), size(0) {
-    Link<T> *link = new Link<T>(0, nullptr, nullptr);
+    Link<T> *link = new Link<T>((T)0, nullptr, nullptr);
     pastLast = link;
 }
 
@@ -331,6 +333,14 @@ void List<T>::pop_front()
         first = tmpLink;
     }
     size--;
+}
+
+template<class T>
+void List<T>::clear() {
+    while(!empty()) {
+        this->pop_back();
+    }
+    pastLast->prev = nullptr;
 }
 
 template<class T>

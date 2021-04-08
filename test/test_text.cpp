@@ -2,7 +2,7 @@
 
 #include<gtest.h>
 
-TEST(Text, can_create_text)
+/* TEST(Text, can_create_text)
 {
     ASSERT_NO_THROW(Text t);
 }
@@ -147,4 +147,4 @@ TEST(Text, can_check_isTop_false)
     Text t;
     t.addNext("Next");
     EXPECT_EQ(false, t.isTop());
-}
+} */

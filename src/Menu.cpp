@@ -53,7 +53,7 @@ void menuText::menuShowText() {
 	char c;
 	int op = 0;
 	int op_n = 1;
-	string str;
+	string str, str1;
 
 	while (isOpen)
 	{
@@ -67,7 +67,8 @@ void menuText::menuShowText() {
 		cout << "* 4.To delete a sublevel of the current row, press x *" << endl;
 		cout << "* 5.Add a row in the current level, press a          *" << endl;
 		cout << "* 6.Add a row in a sublevel, press s                 *" << endl;
-		cout << "* 6.To change the current row, press r               *" << endl;
+		cout << "* 6.To change the current key, press r               *" << endl;
+		cout << "* 6.To change the current val, press t               *" << endl;
 		cout << "******************************************************" << endl;
 		cout << endl;
 		cout << "Current file: "<< nameReadFile << endl;
@@ -99,21 +100,31 @@ void menuText::menuShowText() {
 			isSaveFile = false;
 			break;
 		case 'a':
-			cout << "Please enter the string: ";
+			cout << "Please enter the string key: ";
 			getline(cin, str);
-			text->addNext(str);
+			cout << "Please enter the string value: ";
+			getline(cin, str1);
+			text->addNext(str, str1);
 			isSaveFile = false;
 			break;
 		case 's':
-			cout << "Please enter the string: ";
+			cout << "Please enter the string key: ";
 			getline(cin, str);
-			text->addDown(str);
+			cout << "Please enter the string value: ";
+			getline(cin, str1);
+			text->addDown(str, str1);
 			isSaveFile = false;
 			break;
 		case 'r':
 			cout << "Please enter the string: ";
 			getline(cin, str);
-			text->changeCurrString(str);
+			text->changeCurrKey(str);
+			isSaveFile = false;
+			break;
+		case 't':
+			cout << "Please enter the string: ";
+			getline(cin, str);
+			text->changeCurrValue(str);
 			isSaveFile = false;
 			break;
 		case 'q':
