@@ -13,7 +13,7 @@ enum type {
     INT, STR, BOOL
 };
 
-/* class IValue {
+class IValue {
 public:
     virtual type getType() const = 0;
 };
@@ -21,7 +21,11 @@ public:
 class valString : public IValue {
     string val;
 public:
+    valString(string _val) : val(_val) {}
     type getType() const { return STR; }
+    void setVal(string _val) {
+        val = _val;
+    }
     string getVal() const {
         return val;
     }
@@ -30,7 +34,11 @@ public:
 class valInt : public IValue {
     int val;
 public:
+    valInt(int _val) : val(_val) {}
     type getType() const { return INT; }
+    void setVal(int _val) {
+        val = _val;
+    }
     int getVal() const {
         return val;
     }
@@ -39,95 +47,34 @@ public:
 class valBool : public IValue {
     bool val;
 public:
+    valBool(bool _val) : val(_val) {}
     type getType() const {return BOOL; }
+    void setVal(bool _val) {
+        val = _val;
+    }
     bool getVal() const {
         return val;
     }
 };
- */
-struct Value {
-    friend class Node;
-    Value() {
-        typeVal = STR;
-        strVal = "";
-    }
-
-    Value(string val) {
-        typeVal = STR;
-        strVal = val;
-    }
-
-    Value(int val) {
-        typeVal = INT;
-        intVal = val;
-    }
-
-    Value(bool val) {
-        typeVal = BOOL;
-        boolVal = val;
-    }
-
-    type getType() const {
-        return typeVal;
-    }
-
-    string getString() const {
-        return strVal;
-    }
-
-    int getInt() const {
-        return intVal;
-    }
-
-    bool getBool() const {
-        return boolVal;
-    }
-
-    void setString(string val) {
-        typeVal = STR;
-        strVal = val;
-    }
-
-    void setInt(int val) {
-        typeVal = INT;
-        intVal = val;
-    }
-
-    void setBool(bool val) {
-        typeVal = BOOL;
-        boolVal = val;
-    }
-
-    ~Value() {};
-private:
-    string strVal;
-    type typeVal;
-    union {
-        int intVal;
-        bool boolVal;
-    };
-};
 
 class Node {
-    List<Value> *val;
+    IValue *val;
 
 public:
-    Node(string _key = "", string _val = "", Node *_next = nullptr, Node *_down = nullptr);
+    Node(string _val = "", string _key = "", Node *_next = nullptr, Node *_down = nullptr);
+    Node(int _val, string _key = "", Node *_next = nullptr, Node *_down = nullptr);
+    Node(bool _val, string _key = "", Node *_next = nullptr, Node *_down = nullptr);
 
     string key;
     bool isDown;
     Node *next;
     Node *down;
-
-    bool isList() const;
-
-    List<Value>& getList();
-
-    listIterator<Value> begin() const;
     
     void setValue(string _val);
     void setValue(int _val);
     void setValue(bool _val);
+
+    IValue* getValue() const;
 };
 
 class Text {
@@ -136,7 +83,6 @@ class Text {
     Stack<Node*> *path;
 
     void printCDN(ostream& ostr, Node* root, Node* curr, int level) const;
-    void freadArray(ifstream& ifstr, Node *&root);
     void fprintCDN(ofstream& ofstr, Node* root, int level) const;
     void freadCDN(ifstream& ifstr, Node *&root, bool isNextLvl);
     void delBranch(Node *n);
@@ -145,15 +91,21 @@ public:
     ~Text();
 
     void addNext(string _key, string _val);
+    void addNext(string _key, int _val);
+    void addNext(string _key, bool _val);
     void addDown(string _key, string _val);
+    void addDown(string _key, int _val);
+    void addDown(string _key, bool _val);
 
     void delCurr();
     void delDown();
 
     void changeCurrKey(string str) const;
-    void changeCurrValue(string str) const;
+    void changeCurrValue(string _val) const;
+    void changeCurrValue(int _val) const;
+    void changeCurrValue(bool _val) const;
     string getCurrKey() const;
-    string getCurrValue() const;
+    IValue* getCurrValue() const;
 
     bool isNext() const;
     bool isDown() const;

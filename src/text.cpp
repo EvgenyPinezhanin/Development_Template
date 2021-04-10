@@ -10,52 +10,43 @@ bool checkNum(string str) {
 }
 
 Node::Node(string _key, string _val, Node *_next, Node *_down) 
-    : key(_key), val(new List<Value>), next(_next), down(_down), isDown(false) {
-}
+    : key(_key), val(new valString(_val)), next(_next), down(_down), isDown(false) {}
 
-bool Node::isList() const {
-    return val->getSize() > 1;
-}
+Node::Node(int _val, string _key, Node *_next, Node *_down) 
+    : key(_key), val(new valInt(_val)), next(_next), down(_down), isDown(false) {}
 
-List<Value>& Node::getList() {
-    return *val;
-}
-
-listIterator<Value> Node::begin() const {
-    return val->begin();
-}
+Node::Node(bool _val, string _key, Node *_next, Node *_down)
+    : key(_key), val(new valBool(_val)), next(_next), down(_down), isDown(false) {}
 
 void Node::setValue(string _val) {
-    if (val->getSize() > 1) {
-        val->clear();
-        val->push_front(Value());
-    } else if (val->empty()) {
-        val->push_front(Value());
+    if (val->getType() == STR) {
+        (dynamic_cast<valString*>(val))->setVal(_val);
+    } else {
+        delete val;
+        val = new valString(_val);
     }
-    listIterator<Value> iter = val->begin();
-    iter.getValue().setString(_val);
 }
 
 void Node::setValue(int _val) {
-    if (val->getSize() > 1) {
-        val->clear();
-        val->push_front(Value());
-    } else if (val->empty()) {
-        val->push_front(Value());
-    }
-    listIterator<Value> iter = val->begin();
-    iter.getValue().setInt(_val);
+    if (val->getType() == INT) {
+        (dynamic_cast<valInt*>(val))->setVal(_val);
+    } else {
+        delete val;
+        val = new valInt(_val);
+    }   
 }
 
 void Node::setValue(bool _val) {
-    if (val->getSize() > 1) {
-        val->clear();
-        val->push_front(Value());
-    } else if (val->empty()) {
-        val->push_front(Value());
+    if (val->getType() == BOOL) {
+        (dynamic_cast<valBool*>(val))->setVal(_val);
+    } else {
+        delete val;
+        val = new valBool(_val);
     }
-    listIterator<Value> iter = val->begin();
-    iter.getValue().setBool(_val);
+}
+
+IValue* Node::getValue() const {
+    return val;
 }
 
 void Text::printCDN(ostream& ostr, Node* root, Node* curr, int level) const{
@@ -66,37 +57,17 @@ void Text::printCDN(ostream& ostr, Node* root, Node* curr, int level) const{
     if (root == curr) ostr << ">";
     ostr << root->key << " : ";
     if (!root->isDown) {
-        listIterator<Value> iter = root->begin();
-        if (root->isList()) {
-            List<Value> list = root->getList();
-            listIterator<Value> iter = list.begin();
-            ostr << endl;
-            while(iter.hasNext()) {
-                for (int i = 0; i < level + 1; i++) {
-                    ostr << "   ";
-                }
-                if (iter.getValue().getType() == STR) {
-                    ostr << "\"" << iter.getValue().getString() << "\""<< endl;
-                } else if (iter.getValue().getType() == BOOL) {
-                    ostr << boolalpha << iter.getValue().getBool() << endl;
-                } else if (iter.getValue().getType() == INT) {
-                    ostr << iter.getValue().getInt() << endl;
-                }
-                iter.next();
-            }
-        } else {
-            if (iter.getValue().getType() == STR){
-                ostr << "\"" << iter.getValue().getString() << "\""<< endl;
-            } else if (iter.getValue().getType() == BOOL) {
-                ostr << boolalpha << iter.getValue().getBool() << endl;
-            } else if (iter.getValue().getType() == INT) {
-                ostr << iter.getValue().getInt() << endl;
-            }
-        } 
+        if (root->getValue()->getType() == STR){
+            ostr << "\"" << dynamic_cast<valString*>(root->getValue())->getVal() << "\""<< endl;
+        } else if (root->getValue()->getType() == INT) {
+            ostr << dynamic_cast<valInt*>(root->getValue())->getVal() << endl;
+        } else if (root->getValue()->getType() == BOOL) {
+            ostr << boolalpha << dynamic_cast<valBool*>(root->getValue())->getVal() << endl;
+        }
     } else {
         ostr << endl;
+        printCDN(ostr, root->down, curr, level + 1);
     }
-    printCDN(ostr, root->down, curr, level + 1);
     printCDN(ostr, root->next, curr, level);
 }
 
@@ -114,9 +85,9 @@ void Text::fprintCDN(ofstream& ofstr, Node *root, int level) const{
         }
         ofstr << "}";
     } else {
-        listIterator<Value> iter = root->begin();
-        if (!root->isList())
-        ofstr << "\"" << iter.getValue().getString() << "\"";
+        //listIterator<Value> iter = root->begin();
+        //if (!root->isList())
+        //ofstr << "\"" << iter.getValue().getString() << "\"";
         //Доделать
     }
     if (root->next != nullptr) {
@@ -126,60 +97,6 @@ void Text::fprintCDN(ofstream& ofstr, Node *root, int level) const{
     }
     
     fprintCDN(ofstr, root->next, level);
-}
-
-void Text::freadArray(ifstream& ifstr, Node *&root) {
-    if (ifstr.eof()) throw logic_error("Invalid file format");;
-    string str;
-    State state = q0;
-    List<Value> &list = root->getList();
-    listIterator<Value> iter = list.begin();
-    while(true) {
-        ifstr >> str;
-        if (state == q0) {
-            if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
-                iter = list.insert(iter, str.substr(1, str.length() - 2));
-                state = q2;
-            } else if (str == "true") {
-                iter = list.insert(iter, true);
-                state = q2;
-            } else if (str == "false") {
-                iter = list.insert(iter, false);
-                state = q2;
-            } else if (checkNum(str)) {
-                iter = list.insert(iter, atoi(str.c_str()));
-                state = q2;
-            } else if (str == "]") {
-                return;
-            } else {
-                throw logic_error("Invalid file format");
-            }
-        } else if (state == q1) {
-            if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
-                iter = list.insert(iter, str.substr(1, str.length() - 2));
-                state = q2;
-            } else if (str == "true") {
-                iter = list.insert(iter, true);
-                state = q2;
-            } else if (str == "false") {
-                iter = list.insert(iter, false);
-                state = q2;
-            } else if (checkNum(str)) {
-                iter = list.insert(iter, atoi(str.c_str()));
-                state = q2;
-            } else {
-                throw logic_error("Invalid file format");
-            }
-        } else if (state == q2) {
-            if (str == ",") {
-                state = q1;
-            } else if (str == "]") {
-                return;
-            } else {
-                throw logic_error("Invalid file format");
-            }
-        }
-    }
 }
 
 void Text::freadCDN(ifstream& ifstr, Node *&root, bool isNextLvl) {
@@ -229,9 +146,9 @@ void Text::freadCDN(ifstream& ifstr, Node *&root, bool isNextLvl) {
                 root->isDown = true;
                 freadCDN(ifstr, root->down, true);
                 state = q4;
-            } else if (str == "[") {
+            /* } else if (str == "[") {
                 freadArray(ifstr, root);
-                state = q4;
+                state = q4; */
             } else {
                 throw logic_error("Invalid file format");
             }
@@ -269,19 +186,57 @@ Text::~Text() {
 
 void Text::addNext(string _key, string _val) {
     if (root == nullptr) {
-        root = curr = new Node(_key, _val);
+        root = curr = new Node(_val, _key);
         return;
     }
-    Node *tmp = new Node(_key, _val, curr->next);
+    Node *tmp = new Node(_val, _key, curr->next);
+    curr->next = tmp;
+}
+
+void Text::addNext(string _key, int _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_val, _key);
+        return;
+    }
+    Node *tmp = new Node(_val, _key, curr->next);
+    curr->next = tmp;
+}
+
+void Text::addNext(string _key, bool _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_val, _key);
+        return;
+    }
+    Node *tmp = new Node(_val, _key, curr->next);
     curr->next = tmp;
 }
 
 void Text::addDown(string _key, string _val) {
     if (root == nullptr) {
-        root = curr = new Node(_key, _val);
+        root = curr = new Node(_val, _key);
         return;
     }
-    Node *tmp = new Node(_key, _val, curr->down);
+    Node *tmp = new Node(_val, _key, curr->down);
+    curr->isDown = true;
+    curr->down = tmp;
+}
+
+void Text::addDown(string _key, int _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_val, _key);
+        return;
+    }
+    Node *tmp = new Node(_val, _key, curr->down);
+    curr->isDown = true;
+    curr->down = tmp;
+}
+
+void Text::addDown(string _key, bool _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_val, _key);
+        return;
+    }
+    Node *tmp = new Node(_val, _key, curr->down);
     curr->isDown = true;
     curr->down = tmp;
 }
@@ -314,9 +269,19 @@ void Text::changeCurrKey(string str) const{
     curr->key = str;
 }
 
-void Text::changeCurrValue(string str) const{
+void Text::changeCurrValue(string _val) const{
     if (curr == nullptr) throw logic_error("curr == nullptr");
-    curr->setValue(str);
+    curr->setValue(_val);
+}
+
+void Text::changeCurrValue(int _val) const{
+    if (curr == nullptr) throw logic_error("curr == nullptr");
+    curr->setValue(_val);
+}
+
+void Text::changeCurrValue(bool _val) const{
+    if (curr == nullptr) throw logic_error("curr == nullptr");
+    curr->setValue(_val);
 }
 
 string Text::getCurrKey() const {
@@ -324,10 +289,9 @@ string Text::getCurrKey() const {
     return curr->key;
 }
 
-string Text::getCurrValue() const {
+IValue* Text::getCurrValue() const {
     if (curr == nullptr) throw logic_error("curr == nullptr");
-    listIterator<Value> iter = curr->begin();
-    return iter.getValue().getString();
+    return curr->getValue();
 }
 
 bool Text::isNext() const {
