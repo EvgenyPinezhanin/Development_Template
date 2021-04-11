@@ -12,13 +12,25 @@ bool checkNum(string str) {
 Node::Node(string _key, string _val, Node *_next, Node *_down) 
     : key(_key), val(new valString(_val)), next(_next), down(_down), isDown(false) {}
 
-Node::Node(int _val, string _key, Node *_next, Node *_down) 
+Node::Node(string _key, const char* _val, Node *_next, Node *_down) 
+    : key(_key), val(new valString(string(_val))), next(_next), down(_down), isDown(false) {}
+
+Node::Node(string _key, int _val, Node *_next, Node *_down) 
     : key(_key), val(new valInt(_val)), next(_next), down(_down), isDown(false) {}
 
-Node::Node(bool _val, string _key, Node *_next, Node *_down)
+Node::Node(string _key, bool _val, Node *_next, Node *_down)
     : key(_key), val(new valBool(_val)), next(_next), down(_down), isDown(false) {}
 
 void Node::setValue(string _val) {
+    if (val->getType() == STR) {
+        (dynamic_cast<valString*>(val))->setVal(_val);
+    } else {
+        delete val;
+        val = new valString(_val);
+    }
+}
+
+void Node::setValue(const char* _val) {
     if (val->getType() == STR) {
         (dynamic_cast<valString*>(val))->setVal(_val);
     } else {
@@ -85,17 +97,19 @@ void Text::fprintCDN(ofstream& ofstr, Node *root, int level) const{
         }
         ofstr << "}";
     } else {
-        //listIterator<Value> iter = root->begin();
-        //if (!root->isList())
-        //ofstr << "\"" << iter.getValue().getString() << "\"";
-        //Доделать
+        if (root->getValue()->getType() == STR){
+            ofstr << "\"" << dynamic_cast<valString*>(root->getValue())->getVal() << "\"";
+        } else if (root->getValue()->getType() == INT) {
+            ofstr << dynamic_cast<valInt*>(root->getValue())->getVal();
+        } else if (root->getValue()->getType() == BOOL) {
+            ofstr << boolalpha << dynamic_cast<valBool*>(root->getValue())->getVal();
+        }
     }
     if (root->next != nullptr) {
         ofstr <<  " ," << endl;
     } else {
         ofstr << endl;
     }
-    
     fprintCDN(ofstr, root->next, level);
 }
 
@@ -109,14 +123,14 @@ void Text::freadCDN(ifstream& ifstr, Node *&root, bool isNextLvl) {
         ifstr >> str;
         if (state == q0) {
             if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
-                root = new Node(str.substr(1, str.length() - 2));
+                root = new Node(str.substr(1, str.length() - 2), string(""));
                 state = q2;
             } else {
                 throw logic_error("Invalid file format");
             }
         } else if (state == q1) {
             if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
-                root = new Node(str.substr(1, str.length() - 2));
+                root = new Node(str.substr(1, str.length() - 2), string(""));
                 state = q2;
             } else if (str == "}") {
                 return;
@@ -146,9 +160,6 @@ void Text::freadCDN(ifstream& ifstr, Node *&root, bool isNextLvl) {
                 root->isDown = true;
                 freadCDN(ifstr, root->down, true);
                 state = q4;
-            /* } else if (str == "[") {
-                freadArray(ifstr, root);
-                state = q4; */
             } else {
                 throw logic_error("Invalid file format");
             }
@@ -186,57 +197,76 @@ Text::~Text() {
 
 void Text::addNext(string _key, string _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->next);
+    Node *tmp = new Node(_key, _val, curr->next);
+    curr->next = tmp;
+}
+
+void Text::addNext(string _key, const char* _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_key, _val);
+        return;
+    }
+    Node *tmp = new Node(_key, _val, curr->next);
     curr->next = tmp;
 }
 
 void Text::addNext(string _key, int _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->next);
+    Node *tmp = new Node(_key, _val, curr->next);
     curr->next = tmp;
 }
 
 void Text::addNext(string _key, bool _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->next);
+    Node *tmp = new Node(_key, _val, curr->next);
     curr->next = tmp;
 }
 
 void Text::addDown(string _key, string _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->down);
+    Node *tmp = new Node(_key, _val, curr->down);
+    curr->isDown = true;
+    curr->down = tmp;
+}
+
+void Text::addDown(string _key, const char* _val) {
+    if (root == nullptr) {
+        root = curr = new Node(_key, _val);
+        return;
+    }
+    Node *tmp = new Node(_key, _val, curr->down);
     curr->isDown = true;
     curr->down = tmp;
 }
 
 void Text::addDown(string _key, int _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->down);
+    Node *tmp = new Node(_key, _val, curr->down);
     curr->isDown = true;
     curr->down = tmp;
 }
 
 void Text::addDown(string _key, bool _val) {
     if (root == nullptr) {
-        root = curr = new Node(_val, _key);
+        root = curr = new Node(_key, _val);
         return;
     }
-    Node *tmp = new Node(_val, _key, curr->down);
+    Node *tmp = new Node(_key, _val, curr->down);
     curr->isDown = true;
     curr->down = tmp;
 }
@@ -259,6 +289,7 @@ void Text::delCurr() {
 }
 
 void Text::delDown() {
+    curr->isDown = false;
     if (curr == nullptr || curr->down == nullptr) return;
     delBranch(curr->down);
     curr->down = nullptr;
@@ -270,6 +301,11 @@ void Text::changeCurrKey(string str) const{
 }
 
 void Text::changeCurrValue(string _val) const{
+    if (curr == nullptr) throw logic_error("curr == nullptr");
+    curr->setValue(_val);
+}
+
+void Text::changeCurrValue(const char* _val) const{
     if (curr == nullptr) throw logic_error("curr == nullptr");
     curr->setValue(_val);
 }
@@ -292,6 +328,10 @@ string Text::getCurrKey() const {
 IValue* Text::getCurrValue() const {
     if (curr == nullptr) throw logic_error("curr == nullptr");
     return curr->getValue();
+}
+
+bool Text::empty() const {
+    return !root;
 }
 
 bool Text::isNext() const {

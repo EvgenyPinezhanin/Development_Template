@@ -1,0 +1,116 @@
+/* struct Value {
+    friend class Node;
+    Value() {
+        typeVal = STR;
+        strVal = "";
+    }
+
+    Value(string val) {
+        typeVal = STR;
+        strVal = val;
+    }
+
+    Value(int val) {
+        typeVal = INT;
+        intVal = val;
+    }
+
+    Value(bool val) {
+        typeVal = BOOL;
+        boolVal = val;
+    }
+
+    type getType() const {
+        return typeVal;
+    }
+
+    string getString() const {
+        return strVal;
+    }
+
+    int getInt() const {
+        return intVal;
+    }
+
+    bool getBool() const {
+        return boolVal;
+    }
+
+    void setString(string val) {
+        typeVal = STR;
+        strVal = val;
+    }
+
+    void setInt(int val) {
+        typeVal = INT;
+        intVal = val;
+    }
+
+    void setBool(bool val) {
+        typeVal = BOOL;
+        boolVal = val;
+    }
+
+    ~Value() {};
+private:
+    string strVal;
+    type typeVal;
+    union {
+        int intVal;
+        bool boolVal;
+    };
+}; */
+
+/* void Text::freadArray(ifstream& ifstr, Node *&root) {
+    if (ifstr.eof()) throw logic_error("Invalid file format");;
+    string str;
+    State state = q0;
+    List<Value> &list = root->getList();
+    listIterator<Value> iter = list.begin();
+    while(true) {
+        ifstr >> str;
+        if (state == q0) {
+            if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
+                iter = list.insert(iter, str.substr(1, str.length() - 2));
+                state = q2;
+            } else if (str == "true") {
+                iter = list.insert(iter, true);
+                state = q2;
+            } else if (str == "false") {
+                iter = list.insert(iter, false);
+                state = q2;
+            } else if (checkNum(str)) {
+                iter = list.insert(iter, atoi(str.c_str()));
+                state = q2;
+            } else if (str == "]") {
+                return;
+            } else {
+                throw logic_error("Invalid file format");
+            }
+        } else if (state == q1) {
+            if (str.length() > 1 && str[0] == '\"' && str[str.length() - 1] == '\"') {
+                iter = list.insert(iter, str.substr(1, str.length() - 2));
+                state = q2;
+            } else if (str == "true") {
+                iter = list.insert(iter, true);
+                state = q2;
+            } else if (str == "false") {
+                iter = list.insert(iter, false);
+                state = q2;
+            } else if (checkNum(str)) {
+                iter = list.insert(iter, atoi(str.c_str()));
+                state = q2;
+            } else {
+                throw logic_error("Invalid file format");
+            }
+        } else if (state == q2) {
+            if (str == ",") {
+                state = q1;
+            } else if (str == "]") {
+                return;
+            } else {
+                throw logic_error("Invalid file format");
+            }
+        }
+    }
+} */

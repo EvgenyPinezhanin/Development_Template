@@ -9,6 +9,8 @@
 
 using namespace std;
 
+bool checkNum(string str);
+
 enum type {
     INT, STR, BOOL
 };
@@ -61,9 +63,10 @@ class Node {
     IValue *val;
 
 public:
-    Node(string _val = "", string _key = "", Node *_next = nullptr, Node *_down = nullptr);
-    Node(int _val, string _key = "", Node *_next = nullptr, Node *_down = nullptr);
-    Node(bool _val, string _key = "", Node *_next = nullptr, Node *_down = nullptr);
+    Node(string _key, string _val, Node *_next = nullptr, Node *_down = nullptr);
+    Node(string _key, const char* _val, Node *_next = nullptr, Node *_down = nullptr);
+    Node(string _key, int _val, Node *_next = nullptr, Node *_down = nullptr);
+    Node(string _key, bool _val, Node *_next = nullptr, Node *_down = nullptr);
 
     string key;
     bool isDown;
@@ -71,6 +74,7 @@ public:
     Node *down;
     
     void setValue(string _val);
+    void setValue(const char* _val);
     void setValue(int _val);
     void setValue(bool _val);
 
@@ -91,9 +95,11 @@ public:
     ~Text();
 
     void addNext(string _key, string _val);
+    void addNext(string _key, const char* _val);
     void addNext(string _key, int _val);
     void addNext(string _key, bool _val);
     void addDown(string _key, string _val);
+    void addDown(string _key, const char* _val);
     void addDown(string _key, int _val);
     void addDown(string _key, bool _val);
 
@@ -102,10 +108,13 @@ public:
 
     void changeCurrKey(string str) const;
     void changeCurrValue(string _val) const;
+    void changeCurrValue(const char* _val) const;
     void changeCurrValue(int _val) const;
     void changeCurrValue(bool _val) const;
     string getCurrKey() const;
     IValue* getCurrValue() const;
+
+    bool empty() const;
 
     bool isNext() const;
     bool isDown() const;
