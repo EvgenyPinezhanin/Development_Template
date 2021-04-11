@@ -1,4 +1,4 @@
-//#include "add.h"
+#include<text.h>
 
 #include <gtest.h>
 

@@ -15,7 +15,7 @@ struct Node {
     Node* parent;
 
     Node(string _key, Node* _parent = nullptr, Node* _left = nullptr, Node* _right = nullptr) 
-        : key(_key), left(_left), right(_right), parent(_parent), count(0) {};
+        : key(_key), left(_left), right(_right), parent(_parent), count(1) {};
 };
 
 class TreeSearch {
@@ -45,7 +45,7 @@ TreeSearch::TreeSearch() : root(nullptr) {};
 
 void TreeSearch::insert(string _key) {
     if (root == nullptr) {
-        Node *tmp = new Node(_key);
+        root = new Node(_key);
         return;
     }
     Node *tmp = root;
@@ -68,6 +68,7 @@ void TreeSearch::insert(string _key) {
             }
         } else {
             tmp->count++;
+            return;
         }
     }
 }

@@ -1,4 +1,5 @@
 #include<iostream>
+#include<set>
 #include<text.h>
 #include<TreeSearch.h>
 
@@ -13,16 +14,16 @@ int main() {
 	List<string> *list = text.split(' ');
 	TreeSearch tree;
 	listIterator<string> iter = list->begin();
+	set<string> setStr;
 	while(iter.hasNext()){
 		tree.insert(iter.getValue());
+		setStr.insert(iter.getValue());
 		iter.next();
 	}
     int count = 0;
-	listIterator<string> iter = list->begin();
-	while(iter.hasNext()){
-		count = tree.search(iter.getValue());
-		cout << iter.getValue() << ": " << count;
-		iter.next();
+	for (auto iter = setStr.begin(); iter != setStr.end(); iter++) {
+		count = tree.search(*iter);
+		cout << *iter << ": " << count << endl;
 	}
 	return 0;
 }

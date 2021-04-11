@@ -18,7 +18,7 @@ include_directories("${PROJECT_INCLUDE}" gtest)
 #add_subdirectory(src)
 add_subdirectory(main)
 
-option(BTEST "build test?" OFF)
+option(BTEST "build test?" ON)
 
 if(BTEST)
 	add_subdirectory(gtest)

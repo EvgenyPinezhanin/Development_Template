@@ -8,7 +8,7 @@
 using namespace std;
 
 class Text {
-    string* text;
+    string text;
 public:
     Text();
 
@@ -20,23 +20,22 @@ public:
 };
 
 Text::Text() {
-    text = new string;
-    *text = "";
+    text = "";
 };
 
 void Text::setString(string str) {
-    *text = str;
+    text = str;
 }
 
 istream& operator>>(istream& istr, Text& text) {
-    istr >> *(text.text);
+    istr >> text.text;
     return istr;
 }
 
 void Text::replace() {
-    for (int i = 0; i < text->length(); i++) {
-        if ((*text)[i] == '!' || (*text)[i] == ',' || (*text)[i] == '.' || (*text)[i] == '?') {
-            (*text)[i] = ' ';
+    for (int i = 0; i < text.length(); i++) {
+        if ((text[i] < 'a' || text[i] > 'z') && text[i] != ' ') {
+            text[i] = ' ';
         }
     }
 }
@@ -45,13 +44,15 @@ List<string>* Text::split(char c) {
     List<string> *list = new List<string>();
     string tmp = "";
     bool b = false;
-    for (int i = 0; i < text->length(); i++) {
-        if ((*text)[i] != c) {
+    for (int i = 0; i < text.length(); i++) {
+        if (text[i] != c) {
             if (b) {
                 list->push_back(tmp);
-                tmp = (*text)[i];
+                tmp = text[i];
+                b = false;
+            } else {
+                tmp.push_back(text[i]);
             }
-            tmp.push_back((*text)[i]);
         } else {
             if (tmp != "") b = true;
         }
