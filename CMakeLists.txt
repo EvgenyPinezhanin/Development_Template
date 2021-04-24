@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(PROJECT_NAME task_planner)
+set(PROJECT_NAME tree)
 project(${PROJECT_NAME})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -15,10 +15,10 @@ set(PROJECT_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories("${PROJECT_INCLUDE}" gtest)
 
 # BUILD
-add_subdirectory(src)
+#add_subdirectory(src)
 add_subdirectory(main)
 
-option(BTEST "build test?" ON)
+option(BTEST "build test?" OFF)
 
 if(BTEST)
 	add_subdirectory(gtest)
